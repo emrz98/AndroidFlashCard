@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Card {
-    public class User {
-        @PrimaryKey
+        @PrimaryKey(autoGenerate = true)
         public int uid;
 
         @ColumnInfo(name = "first_name")
@@ -16,6 +15,5 @@ public class Card {
 
         @ColumnInfo(name = "last_name")
         public String lastName;
-    }
 
 }

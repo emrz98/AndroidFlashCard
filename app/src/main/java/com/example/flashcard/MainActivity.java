@@ -1,16 +1,25 @@
 package com.example.flashcard;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.flashcard.adapters.AdapterDecks;
 import com.example.flashcard.adapters.AdapterMain;
 import com.example.flashcard.dao.ItemMainDao;
+import com.example.flashcard.fragments.DialogAddDeck;
 import com.example.flashcard.models.entity.Deck;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,31 +36,30 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     List<Deck> listDecks;
     AppDatabase db;
+    FloatingActionButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listItems = new ArrayList<>();
-        ItemMainDao newItem = new ItemMainDao("Emmanuel");
-        ItemMainDao newItem2 = new ItemMainDao("Eduardo");
-        listItems.add(newItem);
-        listItems.add(newItem2);
+        addButton = findViewById(R.id.addButton);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogAddDeck dialogAddDeck = new DialogAddDeck();
+                dialogAddDeck.show(getSupportFragmentManager(), "");
+            }
+        });
 
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "database-name").fallbackToDestructiveMigration().build();
-
-/*        Deck deck = new Deck();
-        deck.setName("Otro deck");
-        db.deckDao().insertDeck(deck);*/
         try{
             listDecks = getDefaultData();
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
 
-
-//        RecyclerView.Adapter adapterMain = new AdapterMain(listItems);
         RecyclerView.Adapter adapterDecks = new AdapterDecks(listDecks);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
